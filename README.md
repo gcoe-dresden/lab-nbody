@@ -39,3 +39,10 @@ However, due to the serial performance, validation is restricted to <8193.
 - How is the performance for different blocksizes?
 - What is the maximum blocksize?
 
+### Profiling CUDA kernels - Current Issues
+
+With CUDA driver 418.43+ admin privileges are required to gather the metrics/events from the device.
+With older CUDA versions < 10.2, errors look a bit different, e.g. `Error: Internal profiling error 4183:7.`
+As of CUDA driver version 418.43 privileges for root/CAP_SYS are required, to use nvprof CUPTI, see:
+
+     https://docs.nvidia.com/cupti/Cupti/r_overview.html#r_whats_new
