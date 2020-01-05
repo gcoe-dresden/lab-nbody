@@ -128,11 +128,19 @@ int main(const int argc, const char** argv) {
     dev = atoi(argv[2]);
 
   std::cout << "USAGE\n ./nbody [nbodies] [device-index]\n\n";
-
+  dim3 blocks( (nbodies-1)/BLOCK_SIZE+1 );
   // Device information
   CHECK_CUDA( cudaSetDevice(dev) );
   std::cout << getCUDADeviceInformations(dev).str()
-            << "\n\n";
+            << "\n"
+            << "\nThreads per block: "<< BLOCK_SIZE
+            << "\nBlocks per SM: " << blocks.x << " (monolithic)"
+            << "\nEpsilon: " << SOFTENING
+            << "\nTimestep: " << TIMESTEP
+            << "\nIterations: " << ITERATIONS
+            << "\nDelta: " << DELTA
+            << "\n\n"
+    ;
 
   // for time measurement
   float milliseconds = 0;
@@ -161,8 +169,6 @@ int main(const int argc, const char** argv) {
   }
 
   CHECK_CUDA(cudaMemcpy(d_p, p, nbodies*sizeof(Body), cudaMemcpyHostToDevice));
-
-  dim3 blocks( (nbodies-1)/BLOCK_SIZE+1 );
 
   // benchmark loop
   for (int iter = 1; iter <= ITERATIONS; iter++) {
